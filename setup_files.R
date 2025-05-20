@@ -17,7 +17,12 @@ get_input <- function(year = 2024, day = 1, session = SESSION, file = NULL) {
   # Save the AoC problem input to file
   if (is.null(file)) {
     day_str <- sprintf("%02d", day)
-    file <- glue::glue("{year}/{day_str}-input")
+    dir <- glue::glue("{year}/day-{day_str}")
+    file <- glue::glue("{dir}/{day_str}-input")
+  }
+  # Check if the dir exists, else create it
+  if (!fs::dir_exists(dir)) {
+    fs::dir_create(dir)
   }
   writeLines(input, con = file)
   cli::cli_alert_info(
@@ -26,17 +31,17 @@ get_input <- function(year = 2024, day = 1, session = SESSION, file = NULL) {
 }
 
 setup_r_file <- function(year = 2024, day = 1) {
-  # Generate directory for the year
-  dir <- as.character(year)
+  # Generate directory for the year and
+  day_str <- sprintf("%02d", day)
+  dir <- glue::glue("{year}/day-{day_str}")
   if (!dir.exists(dir)) {
     dir.create(dir)
   }
   # Define the basic file structure
-  day_str <- sprintf("%02d", day)
   file_content <- whisker::whisker.render(
     '
 # Read input data ----
-input <- "{{year}}/{{day}}-input"
+input <- "{{year}}/day-{{day}}/{{day}}-input"
 
 # Part 1 ----
 
@@ -44,11 +49,15 @@ input <- "{{year}}/{{day}}-input"
     list(year = year, day = day_str)
   )
   # Render the template and save to file
-  file_name <- glue::glue("{year}/{day_str}.R")
-  writeLines(text = file_content, con = file_name)
-  cli::cli_alert_info(
-    "R files set up for day {day} of year {year} at {.path {file_name}}"
-  )
+  file_name <- glue::glue("{year}/day-{day_str}/{day_str}.R")
+  if (fs::file_exists(file_name)) {
+    cli::cli_alert_warning("File {.path {file_name}} already exists")
+  } else {
+    writeLines(text = file_content, con = file_name)
+    cli::cli_alert_info(
+      "R files set up for day {day} of year {year} at {.path {file_name}}"
+    )
+  }
 }
 
 # setup_r_file(year = 2024, day = 2)
