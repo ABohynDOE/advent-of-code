@@ -1,6 +1,13 @@
-SESSION <- "53616c7465645f5fa8c95371ce3a71bbd60895d4ebde139eea12fe45664c22aa7d296a50db247e861e5cbec3444a5ac4e988784f127ba5b589e2d5a74e3d15bd"
+# You can find SESSION by using Chrome tools:
+# 1) Go to https://adventofcode.com/2025/day/1/input
+# 2) right-click -> inspect -> click the "Application" tab.
+# 3) Refresh
+# 5) Click https://adventofcode.com under "Cookies"
+# 6) Grab the value for session. Fill it in.
 
-get_input <- function(year = 2024, day = 1, session = SESSION, file = NULL) {
+SESSION <- "53616c7465645f5f006a66d0f0ddfa4ece13bfc1e1fc5c3aa793e1ea9678d2af652b57255d5876c2d544ad4f6aaa04ac692f286971a6b0c461a90bd731f03472"
+
+get_input <- function(year = 2025, day = 1, session = SESSION, file = NULL) {
   # Create the request
   req <- httr2::request("https://adventofcode.com/") |>
     httr2::req_url_path_append(
